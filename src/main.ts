@@ -24,6 +24,9 @@ async function bootstrap() {
   // Configuration CORS (si nécessaire)
   app.enableCors();
 
+  // Préfixe global pour toutes les routes
+  app.setGlobalPrefix('api');
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
