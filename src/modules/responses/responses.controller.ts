@@ -1,22 +1,20 @@
-import { Controller, Post, Body } from "@nestjs/common";
+import { Controller, Post, Body, HttpStatus, HttpException } from "@nestjs/common";
 import { CreateResponseDto } from "./dto/create-response.dto";
+import { ResponsesService } from "./responses.service";
 
-// Minimal local implementation to satisfy the import until a proper service file/provider is added
-class ResponsesService {
-  async create(createResponseDto: CreateResponseDto) {
-    // placeholder implementation - replace with actual service logic or provide a proper provider
-    return createResponseDto;
-  }
-}
-
-@Controller('responses') // définir le contrôleur pour les réponses
-
+@Controller('responses')
 export class ResponsesController {
   constructor(private readonly responsesService: ResponsesService) {}
 
-
-@Post() // définir la route POST pour créer une nouvelle réponse
-async create(@Body() createResponseDto: CreateResponseDto) {
-    return await this.responsesService.create(createResponseDto);
+  @Post()
+  async create(@Body() createResponseDto: CreateResponseDto) {
+    try {
+      return await this.responsesService.create(createResponseDto);
+    } catch (error) {
+      throw new HttpException(
+        'Failed to create response',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

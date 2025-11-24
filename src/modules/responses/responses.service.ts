@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Response, ResponseDocument } from "./dto/schemas/responses.schema";
@@ -13,7 +13,23 @@ export class ResponsesService {
 
   // Méthode pour créer une nouvelle réponse
   async create(createResponseDto: CreateResponseDto): Promise<Response> {
-    const createdResponse = new this.responseModel(createResponseDto);
-    return createdResponse.save();
+    try {
+      // Validation des données
+      if (!createResponseDto.userId || !createResponseDto.surveyId) {
+        throw new BadRequestException('userId and surveyId are required');
+      }
+
+      if (!createResponseDto.answers || createResponseDto.answers.length === 0) {
+        throw new BadRequestException('At least one answer is required');
+      }
+
+      const createdResponse = new this.responseModel(createResponseDto);
+      return await createdResponse.save();
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to save response');
+    }
   }
 }
