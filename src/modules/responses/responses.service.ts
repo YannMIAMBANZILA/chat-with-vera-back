@@ -16,4 +16,9 @@ export class ResponsesService {
     const createdResponse = new this.responseModel(createResponseDto);
     return createdResponse.save();
   }
+
+  // Example method (keep or replace with your actual implementation)
+  getHello(): string {
+    return "Hello from ResponsesService";
+  }
 }
