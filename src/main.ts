@@ -5,10 +5,10 @@ import { AllExceptionsFilter } from './filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Configuration du filtre global d'exceptions
   app.useGlobalFilters(new AllExceptionsFilter());
-  
+
   // Configuration de la validation globale
   app.useGlobalPipes(
     new ValidationPipe({
