@@ -8,7 +8,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -20,9 +19,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         const uri = config.get<string>('MONGO_URI');
 
         if (!uri) {
+          console.error('❌ MONGO_URI is missing in environment variables');
           throw new Error('MONGO_URI is missing in environment variables');
         }
 
+        console.log('✅ Connecting to MongoDB...');
         return {
           uri,
         };

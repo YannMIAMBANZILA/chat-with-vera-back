@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
-import { ResponsesService } from "./responses.service";
-import { ResponsesController } from "./responses.controller";
-import { Response, ResponseSchema } from "./dto/schemas/responses.schema";
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ResponsesService } from './responses.service';
+import { ResponsesController } from './responses.controller';
+import { Response, ResponseSchema } from './dto/schemas/responses.schema';
 
 @Module({
     controllers: [ResponsesController], // enregistrer le contrôleur des réponses
@@ -11,5 +11,8 @@ import { Response, ResponseSchema } from "./dto/schemas/responses.schema";
     imports: [
         MongooseModule.forFeature([{ name: Response.name, schema: ResponseSchema }]), // enregistrer le schéma Mongoose pour les réponses
     ],
+
+
+
 })
 export class ResponsesModule {}
