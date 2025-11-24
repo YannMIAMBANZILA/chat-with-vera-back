@@ -1,8 +1,12 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
-import { Model } from "mongoose";
-import { InjectModel } from "@nestjs/mongoose";
-import { Response, ResponseDocument } from "./dto/schemas/responses.schema";
-import { CreateResponseDto } from "./dto/create-response.dto";
+import {
+  Injectable,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Response, ResponseDocument } from './dto/schemas/responses.schema';
+import { CreateResponseDto } from './dto/create-response.dto';
 
 @Injectable()
 export class ResponsesService {
@@ -19,7 +23,10 @@ export class ResponsesService {
         throw new BadRequestException('userId and surveyId are required');
       }
 
-      if (!createResponseDto.answers || createResponseDto.answers.length === 0) {
+      if (
+        !createResponseDto.answers ||
+        createResponseDto.answers.length === 0
+      ) {
         throw new BadRequestException('At least one answer is required');
       }
 
