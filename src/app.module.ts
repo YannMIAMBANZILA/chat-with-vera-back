@@ -1,9 +1,37 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { VeraModule } from './modules/vera/vera.module';
+import { ResponsesModule } from './modules/responses/responses.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [],
+  imports: [
+
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const uri = config.get<string>('MONGO_URI');
+
+        if (!uri) {
+          throw new Error('MONGO_URI is missing in environment variables');
+        }
+
+        return {
+          uri,
+        };
+      },
+    }),
+
+    VeraModule,
+    ResponsesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
