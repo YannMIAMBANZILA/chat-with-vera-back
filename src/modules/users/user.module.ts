@@ -10,6 +10,7 @@ import { User, UserSchema } from "./dto/schemas/user.schema";
     ],
     controllers: [UserController],
     providers: [UserService],
+    exports:[UserService],
 })
 
 export class UserModule {}
