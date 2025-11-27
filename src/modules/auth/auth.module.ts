@@ -1,20 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserModule } from '../users/user.module'; 
+import { UserModule } from '../users/user.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     UserModule,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     JwtModule.register({
-        secret: process.env.JWT_SERCRET || 'deb-secret',
-        signOptions: { expiresIn: '1h'}   
-    })
-], // Pour accéder au userService depuis AuthService
+      secret: process.env.JWT_SERCRET || 'deb-secret',
+      signOptions: { expiresIn: '1h' },
+    }),
+  ], // Pour accéder au userService depuis AuthService
   controllers: [AuthController],
   providers: [AuthService],
 })
-
-
 export class AuthModule {}
