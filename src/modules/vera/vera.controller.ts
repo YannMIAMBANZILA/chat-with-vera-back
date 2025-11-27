@@ -28,8 +28,15 @@ export class VeraController {
       throw new BadRequestException('La question est obligatoire');
     }
 
-    // 🔗 URL du webhook n8n (mets ça dans ton .env si possible)
-    const webhookUrl = process.env.N8N_WEBHOOK_URL_test || '';
+    // 🔗 URL du webhook n8n (utilise N8N_WEBHOOK_URL en production, N8N_WEBHOOK_URL_test en test)
+    const webhookUrl =
+      process.env.N8N_WEBHOOK_URL || process.env.N8N_WEBHOOK_URL_test;
+
+    if (!webhookUrl) {
+      throw new BadRequestException(
+        "N8N_WEBHOOK_URL n'est pas configuré dans le .env",
+      );
+    }
 
     const formData = new FormData();
 
@@ -37,28 +44,48 @@ export class VeraController {
 
     // champs texte
     formData.append('question', question);
-    formData.append('userId', userId);
+    formData.append('userId', userId || 'anonymous');
 
     // fichiers (optionnels)
     if (files?.length) {
       for (const file of files) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         formData.append('files', file.buffer, {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           filename: file.originalname,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           contentType: file.mimetype,
         });
       }
     }
 
-    // 🔁 envoie vers n8n
-    const { data } = await axios.post<unknown>(webhookUrl, formData, {
-      headers: formData.getHeaders(),
-    });
+    try {
+      console.log('🚀 Envoi vers n8n:', webhookUrl);
+      console.log('📝 Question:', question);
+      console.log('📁 Fichiers:', files?.length || 0);
 
-    // 📨 renvoi brut au front
-    // → ton front attend au moins { answer: string }
-    return data;
+      // 🔁 envoie vers n8n
+      const { data } = await axios.post<unknown>(webhookUrl, formData, {
+        headers: formData.getHeaders(),
+        timeout: 30000, // 30 secondes
+      });
+
+      console.log('✅ Réponse n8n reçue');
+
+      // 📨 renvoi brut au front
+      return data;
+    } catch (error) {
+      console.error('❌ Erreur n8n:', error);
+
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          throw new BadRequestException(
+            "Le webhook n8n n'existe pas ou n'est pas actif. Vérifiez que votre workflow n8n est démarré.",
+          );
+        }
+        throw new BadRequestException(
+          `Erreur n8n (${error.response?.status}): ${error.message}`,
+        );
+      }
+
+      throw error;
+    }
   }
 }
