@@ -5,6 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { VeraModule } from './modules/vera/vera.module';
 import { ResponsesModule } from './modules/responses/responses.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserModule } from './modules/users/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -29,7 +31,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         };
       },
     }),
-
+    UserModule,
+    AuthModule,
     VeraModule,
     ResponsesModule,
   ],
