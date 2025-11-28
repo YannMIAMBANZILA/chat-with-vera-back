@@ -7,6 +7,7 @@ import { ResponsesModule } from './modules/responses/responses.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/users/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from './modules/auth/auth.module';
     AuthModule,
     VeraModule,
     ResponsesModule,
+    DashboardModule
   ],
   controllers: [AppController],
   providers: [AppService],
