@@ -14,6 +14,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DashboardController } from './dashboard.controller';
 import { DashboardService } from './dashboard.service';
 import { DashboardData, DashboardDataSchema } from './schemas/dashboard.schema';
+import { SurveysModule } from '../surveys/surveys.modules';
+import { UserModule } from '../users/user.module';
+import { ResponsesModule } from '../responses/responses.module';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { DashboardData, DashboardDataSchema } from './schemas/dashboard.schema';
     MongooseModule.forFeature([
       { name: DashboardData.name, schema: DashboardDataSchema },
     ]),
+    UserModule,
+    ResponsesModule,
+    SurveysModule
   ],
   controllers: [DashboardController], // Routes HTTP du dashboard admin
   providers: [DashboardService],      // Logique pour lire les stats
