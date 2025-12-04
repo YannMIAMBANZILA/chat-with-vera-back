@@ -21,17 +21,16 @@ async function bootstrap() {
     }),
   );
 
-  // Configuration CORS (si nécessaire)
+  // Configuration CORS
   app.enableCors({
     origin: [
-      'https://chat-with-vera.vercel.app',
-      
+      'http://localhost:4200', // Développement Angular
+      'https://chat-with-vera.vercel.app', // Production
     ],
-    methods: 'GET, POST, OPTIONS',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
-  }
-    
-  );
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  });
 
   // Préfixe global pour toutes les routes
   app.setGlobalPrefix('api');
@@ -40,6 +39,5 @@ async function bootstrap() {
   
 
   await app.listen(port, '0.0.0.0');
-
 }
 bootstrap();
