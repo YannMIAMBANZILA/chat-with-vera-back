@@ -39,4 +39,10 @@ export class ResponsesService {
       throw new InternalServerErrorException('Failed to save response');
     }
   }
+  
+  // 🔹 Récupérer toutes les réponses (pour le dashboard, stats, etc.)
+  async findAll(): Promise<Response[]> {
+    return this.responseModel.find().exec();
+  }
+
 }

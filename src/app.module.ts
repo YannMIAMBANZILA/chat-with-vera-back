@@ -7,13 +7,18 @@ import { ResponsesModule } from './modules/responses/responses.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/users/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { RealtimeModule } from './realtime/realtime.module';
 
 @Module({
   imports: [
+    // 1️⃣ Config global
     ConfigModule.forRoot({
       isGlobal: true,
+      // envFilePath: '.env', // si besoin
     }),
 
+    // 2️⃣ Connexion MongoDB (une seule fois, proprement)
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,10 +36,14 @@ import { AuthModule } from './modules/auth/auth.module';
         };
       },
     }),
+
+    // 3️⃣ Tes modules métiers
     UserModule,
     AuthModule,
     VeraModule,
     ResponsesModule,
+    DashboardModule,
+    RealtimeModule, // <= ici, comme un module normal
   ],
   controllers: [AppController],
   providers: [AppService],
