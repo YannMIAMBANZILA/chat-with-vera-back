@@ -24,15 +24,22 @@ import { RealtimeModule } from './realtime/realtime.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const uri = config.get<string>('MONGO_URI');
+        const dbName = config.get<string>('DB_NAME');
 
         if (!uri) {
           console.error('❌ MONGO_URI is missing in environment variables');
           throw new Error('MONGO_URI is missing in environment variables');
         }
 
-        console.log('✅ Connecting to MongoDB...');
+        if (!dbName) {
+          console.error('❌ DB_NAME is missing in environment variables');
+          throw new Error('DB_NAME is missing in environment variables');
+        }
+
+        console.log(`✅ Connecting to MongoDB database: ${dbName}...`);
         return {
           uri,
+          dbName,
         };
       },
     }),

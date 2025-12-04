@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './filters/http-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
 
   // Configuration du filtre global d'exceptions
   app.useGlobalFilters(new AllExceptionsFilter());
@@ -36,8 +36,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const port = process.env.PORT || 3000; // important pour Render
-  
 
   await app.listen(port, '0.0.0.0');
 }
-bootstrap();
+
+void bootstrap();
