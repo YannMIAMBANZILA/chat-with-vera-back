@@ -2,13 +2,12 @@ import * as bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../users/user.service';
-import { access } from 'fs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -17,21 +16,39 @@ export class AuthService {
       throw new UnauthorizedException('Email ou mot de passe incorrect');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       throw new UnauthorizedException('Email ou mot de passe incorrect');
     }
 
-    return user;
+    // On ne garde que les champs utiles
+    const doc: any = (user as any)._doc ?? user;
+
+    const safeUser = {
+      _id: doc._id,
+      username: doc.username,
+      email: doc.email,
+      role: doc.role,
+    };
+
+    return safeUser; // ce safeUser sera mis dans req.user
   }
 
-   async login(user: any) {
-   
-    const payload = {email: user.email, sub: user.id, role: user.role };
+  async login(user: { _id: string; username?: string; email: string; role: string }) {
+    const payload = {
+      email: user.email,
+      role: user.role,
+    };
+
+    const access_token = this.jwtService.sign(payload);
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      user: {
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 }
