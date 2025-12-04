@@ -5,10 +5,10 @@ import { AllExceptionsFilter } from './filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Configuration du filtre global d'exceptions
   app.useGlobalFilters(new AllExceptionsFilter());
-  
+
   // Configuration de la validation globale
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,11 +22,21 @@ async function bootstrap() {
   );
 
   // Configuration CORS (si nécessaire)
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'https://chat-with-vera.vercel.app',
+    ],
+    methods: 'GET, POST',
+    credentials: true,
+  }
+    
+  );
 
   // Préfixe global pour toutes les routes
   app.setGlobalPrefix('api');
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT || 3000; // important pour Render
+  await app.listen(port, '0.0.0.0');
+
 }
 bootstrap();
